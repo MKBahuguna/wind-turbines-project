@@ -1,4 +1,4 @@
-from pyspark.sql.functions import col, mean, stddev, when, coalesce
+from pyspark.sql.functions import col, mean, stddev, when, coalesce, expr
 from datetime import datetime, timedelta
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql.functions import explode, sequence, hour
@@ -16,15 +16,15 @@ def get_all_timestamps(spark: SparkSession, start_date: datetime, end_date: date
     )
 
     df_timestamps = df.select(
-                        explode(
-                            sequence(
-                                df.start_date.cast(TimestampType()),
-                                df.end_date.cast(TimestampType()),
-                                timedelta(hours=1)
-                            )
-                        ).alias("timestamp")
-                    ).withColumn("hour", hour("timestamp"))
-    
+        explode(
+            sequence(
+                col("start_date").cast(TimestampType()),
+                col("end_date").cast(TimestampType()),
+                expr("INTERVAL 1 HOUR")
+            )
+        ).alias("timestamp")
+    ).withColumn("hour", hour("timestamp"))
+
     return df_timestamps
 
 
