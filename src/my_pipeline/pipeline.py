@@ -4,15 +4,22 @@ import argparse
 from pyspark.sql.functions import col, mean, stddev, when
 
 
-def main(start_date: str, end_date: str):
-    spark = (SparkSession
-                .builder
-                .appName("App")
-                .getOrCreate())
+def main():
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description="Run the pipeline")
+    parser.add_argument("--start_date", required=True, help="Start date in YYYY-MM-DD format")
+    parser.add_argument("--end_date", required=True, help="End date in YYYY-MM-DD format")
+    args = parser.parse_args()
 
-    # Convert string arguments to datetime objects
-    start_date = datetime.strptime(start_date, "%Y-%m-%d")
-    end_date = datetime.strptime(end_date, "%Y-%m-%d")
+    # Convert arguments to datetime objects
+    start_date = datetime.strptime(args.start_date, "%Y-%m-%d")
+    end_date = datetime.strptime(args.end_date, "%Y-%m-%d")
+
+    # Initialize Spark session
+    spark = (SparkSession
+             .builder
+             .appName("Wind Turbines Pipeline")
+             .getOrCreate())
 
     # Clean the source data
     clean_data(spark, start_date, end_date)
@@ -44,10 +51,4 @@ def clean_data(spark, start_date, end_date):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run the pipeline")
-    parser.add_argument("--start_date", required=True, help="Start date in YYYY-MM-DD format")
-    parser.add_argument("--end_date", required=True, help="End date in YYYY-MM-DD format")
-
-    args = parser.parse_args()
-
-    main(args.start_date, args.end_date)
+    main()
