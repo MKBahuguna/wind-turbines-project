@@ -1,4 +1,4 @@
-raw_table_name = 'dmfos_trial.raw.data_group_1'
+raw_data_path = "s3a://databricks-workspace-stack-7eec3-bucket/unity-catalog/data/*.csv"
 cleaned_table_name = 'dmfos_trial.raw.cleaned'
 statistics_table_name = 'dmfos_trial.raw.statistics'
 anomalies_table_name = 'dmfos_trial.raw.anomalies'

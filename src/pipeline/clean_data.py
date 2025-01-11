@@ -41,7 +41,7 @@ def impute_missing_values_with_means(df_raw: DataFrame, df_timestamps: DataFrame
 
     df_turbines_with_timestamps = df_timestamps.crossJoin(df_turbines)
     df_raw_with_missing_rows = df_turbines_with_timestamps.join(df_raw, on=["timestamp", "turbine_id"], how="left")
-    
+
     df_turbine_hourly_mean = (df_raw_with_missing_rows
                                 .groupBy("turbine_id", "hour")
                                 .agg(
@@ -56,7 +56,7 @@ def impute_missing_values_with_means(df_raw: DataFrame, df_timestamps: DataFrame
 
     df_raw_with_hourly_means = (df_raw_with_missing_rows
                                         .join(df_turbine_hourly_mean, on=["turbine_id", "hour"], how="left"))
-    
+
     df_imputed = (df_raw_with_hourly_means
                     .withColumn("wind_speed", coalesce(col("wind_speed"), col("wind_speed_mean")))
                     .withColumn("wind_direction", coalesce(col("wind_direction"), col("wind_direction_mean")))
@@ -91,7 +91,7 @@ def replace_outliers_with_means(df_zscores: DataFrame) -> DataFrame:
                         col("timestamp"), col("turbine_id"), col("wind_speed"), col("wind_direction"), col("power_output")
                         )
                 )
-   
+
     return df_replaced_outliers
 
 

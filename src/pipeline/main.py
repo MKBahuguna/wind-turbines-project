@@ -1,6 +1,7 @@
 from datetime import datetime
 from pyspark.sql import SparkSession
 import argparse
+from .load_data import load_csv_to_df
 from .calculate_statistics import calculate_daily_statistics
 from .clean_data import clean_data, pre_clean_data
 from .define_anomalies import find_and_write_anomalies
@@ -23,8 +24,8 @@ def main():
              .appName("Wind Turbines Pipeline")
              .getOrCreate())
 
-    # Clean the source data
-    df_zscore = pre_clean_data(spark, start_date, end_date)
+    df_raw = load_csv_to_df(spark)
+    df_zscore = pre_clean_data(spark, df_raw, start_date, end_date)
 
     df_cleaned = clean_data(df_zscore)
 

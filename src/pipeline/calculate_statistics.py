@@ -2,6 +2,7 @@ from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, mean, stddev, to_date, min, max
 from .config import statistics_table_name
 
+
 def calculate_daily_statistics(df_clean: DataFrame) -> DataFrame:
     """
         1. Calculate the daily mean, min and max for power_output column
