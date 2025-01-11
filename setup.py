@@ -12,7 +12,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "run_pipeline=my_pipeline.pipeline:main",
+            "run_pipeline=pipeline.main:main",
         ],
     },
     python_requires=">=3.8",
