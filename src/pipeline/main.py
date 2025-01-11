@@ -1,9 +1,9 @@
 from datetime import datetime
 from pyspark.sql import SparkSession
 import argparse
-from src.pipeline.calculate_statistics import calculate_daily_statistics
-from src.pipeline.clean_data import clean_data, pre_clean_data
-from src.pipeline.define_anomalies import find_and_write_anomalies
+from .calculate_statistics import calculate_daily_statistics
+from .clean_data import clean_data, pre_clean_data
+from .define_anomalies import find_and_write_anomalies
 
 
 def main():

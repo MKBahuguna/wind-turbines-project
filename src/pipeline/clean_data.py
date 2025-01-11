@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql.functions import explode, sequence, hour
 from pyspark.sql.types import TimestampType
-from src.pipeline.config import cleaned_table_name
+from .config import cleaned_table_name
 
 
 def get_all_timestamps(spark: SparkSession, start_date: datetime, end_date: datetime) -> DataFrame:

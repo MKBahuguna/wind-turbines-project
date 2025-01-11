@@ -1,6 +1,6 @@
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col
-from src.pipeline.config import anomalies_table_name
+from .config import anomalies_table_name
 
 
 def find_and_write_anomalies(df_zscores: DataFrame) -> None:
