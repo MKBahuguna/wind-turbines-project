@@ -1,5 +1,5 @@
 from pyspark.sql.functions import col, mean, stddev, when, coalesce, expr, abs
-from datetime import datetime
+from datetime import datetime, timedelta
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql.functions import explode, sequence, hour
 from pyspark.sql.types import TimestampType
@@ -10,8 +10,10 @@ def get_all_timestamps(spark: SparkSession, start_date: datetime, end_date: date
     """
     Generate a list of hourly timestamps between two dates and add an hour column.
     """
+    end_date = end_date - timedelta(hours=1)
+
     df = spark.createDataFrame(
-        [(start_date, end_date)], 
+        [(start_date, end_date)],
         ["start_date", "end_date"]
     )
 

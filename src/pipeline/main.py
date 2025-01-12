@@ -1,6 +1,7 @@
 from datetime import datetime
 from pyspark.sql import SparkSession
 import argparse
+from .config import raw_data_path
 from .load_data import load_csv_to_df
 from .calculate_statistics import calculate_daily_statistics
 from .clean_data import clean_data, pre_clean_data
@@ -24,7 +25,7 @@ def main():
              .appName("Wind Turbines Pipeline")
              .getOrCreate())
 
-    df_raw = load_csv_to_df(spark)
+    df_raw = load_csv_to_df(spark, raw_data_path, start_date, end_date)
     df_zscore = pre_clean_data(spark, df_raw, start_date, end_date)
 
     df_cleaned = clean_data(df_zscore)
