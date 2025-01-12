@@ -9,6 +9,6 @@ def load_csv_to_df(spark) -> DataFrame:
     df = spark.read.format("csv") \
         .option("header", "true") \
         .option("inferSchema", "true") \
-        .load(raw_data_path)
+        .load(f"file:{raw_data_path}")
 
     return df
