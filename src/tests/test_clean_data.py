@@ -2,8 +2,8 @@ import pytest
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StructField, TimestampType, IntegerType, DoubleType, StringType, FloatType
 from datetime import datetime
-from src.pipeline.clean_data import get_all_timestamps, impute_missing_values_with_means
-from src.pipeline.load_data import load_csv_to_df
+from src.pipeline.process_data import get_all_timestamps, impute_missing_values_with_means
+from src.pipeline.load_data import load_data
 
 
 SPARK = SparkSession.builder.appName("test").getOrCreate()
@@ -15,7 +15,7 @@ def test_load_data():
     test_data = '/Users/porshmac/Projects/Porsh/wind-turbines-project/src/tests/data/data_group_1.csv'
 
     # Act
-    df_raw = load_csv_to_df(SPARK, test_data, start_date, end_date)
+    df_raw = load_data(SPARK, test_data, start_date, end_date)
 
     # Assert
     assert df_raw.count() > 0

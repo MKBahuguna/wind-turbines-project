@@ -1,11 +1,14 @@
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col
+from .write_data import merge_delta_table
 from .config import anomalies_table_name
 
 
-def find_and_write_anomalies(df_zscores: DataFrame) -> None:
+def output_anomalies(spark, df_zscores: DataFrame) -> None:
     """
-        Anomalies are any power_output's that are 2 standard deviations from the mean of power_output from that turbine for that hour slot
+        Calculates anomalies which are any power_output's that are 2 standard deviations 
+        from the mean of power_output from that turbine for that hour slot,
+        and writes to delta table.
     """
     df_anomalies = (df_zscores
                     .filter(col("power_output_zscore") > 2)
@@ -14,4 +17,5 @@ def find_and_write_anomalies(df_zscores: DataFrame) -> None:
                     )
                     )
 
-    df_anomalies.write.format("delta").mode("overwrite").saveAsTable(anomalies_table_name)
+    keys = ["turbine_id", "timestamp"]
+    merge_delta_table(spark, df_anomalies, anomalies_table_name, keys)

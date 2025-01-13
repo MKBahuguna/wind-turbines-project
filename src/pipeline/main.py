@@ -2,11 +2,11 @@ from datetime import datetime
 from pyspark.sql import SparkSession
 import argparse
 from .config import raw_data_path
-from .load_data import load_csv_to_df
-from .calculate_statistics import calculate_daily_statistics
-from .clean_data import clean_data, pre_clean_data
-from .define_anomalies import find_and_write_anomalies
-
+from .load_data import load_data
+from .process_data import process_data
+from .output_cleaned import output_cleaned
+from .output_anomalies import output_anomalies
+from .output_statistics import output_statistics
 
 def main():
     # Parse command-line arguments
@@ -25,13 +25,20 @@ def main():
              .appName("Wind Turbines Pipeline")
              .getOrCreate())
 
-    df_raw = load_csv_to_df(spark, raw_data_path, start_date, end_date)
-    df_zscore = pre_clean_data(spark, df_raw, start_date, end_date)
+    # Load raw data in a dataframe
+    df_raw = load_data(spark, raw_data_path, start_date, end_date)
 
-    df_cleaned = clean_data(df_zscore)
+    # Process data
+    df_processed = process_data(spark, df_raw, start_date, end_date)
 
-    find_and_write_anomalies(df_zscore)
-    calculate_daily_statistics(df_cleaned)
+    # Write cleaned data
+    df_cleaned = output_cleaned(spark, df_processed)
+
+    # Write anomalies
+    output_anomalies(spark, df_processed)
+
+    # Write statistics
+    output_statistics(spark, df_cleaned)
 
 
 if __name__ == "__main__":

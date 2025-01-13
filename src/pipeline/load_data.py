@@ -2,7 +2,7 @@ from pyspark.sql import DataFrame
 from pyspark.sql.functions import col
 
 
-def load_csv_to_df(spark, file_path, start_date, end_date) -> DataFrame:
+def load_data(spark, file_path, start_date, end_date) -> DataFrame:
     """
     Load all CSV files into a single DataFrame
     """

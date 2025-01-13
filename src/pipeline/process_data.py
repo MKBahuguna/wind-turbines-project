@@ -3,12 +3,11 @@ from datetime import datetime, timedelta
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql.functions import explode, sequence, hour
 from pyspark.sql.types import TimestampType
-from .config import cleaned_table_name
 
 
 def get_all_timestamps(spark: SparkSession, start_date: datetime, end_date: datetime) -> DataFrame:
     """
-    Generate a list of hourly timestamps between two dates and add an hour column.
+    Generates a dataframe with hourly timestamps between two dates (excluding end_date) and add an hour column.
     """
     end_date = end_date - timedelta(hours=1)
 
@@ -32,12 +31,12 @@ def get_all_timestamps(spark: SparkSession, start_date: datetime, end_date: date
 
 def impute_missing_values_with_means(df_raw: DataFrame, df_timestamps: DataFrame) -> DataFrame:
     """
-        - Get a list of turbines
-        - Get a list of all the expected timeslots
-        - Join expected timeslots and actual timeslots for each turbine to create missing rows
-        - Calculate the hourly mean for each turbine
-        - Join the hourly mean to the missing rows
-        - Fill in missing values with the hourly mean using coalesce
+    Processes turbine data by filling missing values for hourly timeslots:
+    1. Extracts a list of turbines.
+    2. Generates all expected hourly timeslots.
+    3. Joins expected and actual timeslots to identify missing rows.
+    4. Calculates hourly mean for each turbine.
+    5. Fills missing values with the hourly mean.
     """
     df_turbines = df_raw.select('turbine_id').distinct()
 
@@ -70,7 +69,7 @@ def impute_missing_values_with_means(df_raw: DataFrame, df_timestamps: DataFrame
 
 def calculate_zscore(df: DataFrame) -> DataFrame:
     """
-        Calculate z-scores for each column
+        Calculates z-scores for wind_speed, wind_direction, power_output
     """
     df_zscores = (df
                     .withColumn("wind_speed_zscore", abs((col("wind_speed") - col("wind_speed_mean")) / col("wind_speed_stddev")))
@@ -82,7 +81,7 @@ def calculate_zscore(df: DataFrame) -> DataFrame:
 
 def replace_outliers_with_means(df_zscores: DataFrame) -> DataFrame:
     """
-        - Replace values with the hourly mean if the z-score is greater than 3 (3 standard deviations from mean)
+        Replaces outlier values with the hourly mean if the z-score is greater than 3 (3 standard deviations from mean)
     """
 
     df_replaced_outliers = (df_zscores
@@ -97,25 +96,17 @@ def replace_outliers_with_means(df_zscores: DataFrame) -> DataFrame:
     return df_replaced_outliers
 
 
-def pre_clean_data(spark: SparkSession, df_source: DataFrame, start_date: datetime, end_date: datetime) -> DataFrame:
+def process_data(spark: SparkSession, df_source: DataFrame, start_date: datetime, end_date: datetime) -> DataFrame:
     """
-        - Replace any missing rows with the mean of the turbine and hour
-        - Calculate zscore
-        This intermediate df is needed to define anomalies in a separate module
+    Pre-processes turbine data to prepare it for anomaly detection:
+
+    1. Fills missing rows with the mean value for each turbine and hour.
+    2. Computes z-scores for the data to standardize values.
+
+    This intermediate DataFrame is used as input for anomaly detection in a separate module.
     """
     df_timestamps = get_all_timestamps(spark, start_date, end_date)
     df_imputed = impute_missing_values_with_means(df_source, df_timestamps)
     df_zscores = calculate_zscore(df_imputed)
 
     return df_zscores
-
-
-def clean_data(df_zscores: DataFrame) -> DataFrame:
-    """
-        Replace any outliers (3 standard deviations from mean) with the mean of the turbine and hour
-    """
-    df_cleaned = replace_outliers_with_means(df_zscores)
-
-    df_cleaned.write.format("delta").mode("overwrite").saveAsTable(cleaned_table_name)
-
-    return df_cleaned

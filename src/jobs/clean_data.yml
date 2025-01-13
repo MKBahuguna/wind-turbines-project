@@ -1,0 +1,46 @@
+resources:
+  jobs:
+    wind_turbines:
+      name: wind_turbines
+      trigger:
+        pause_status: PAUSED
+        periodic:
+          interval: 1
+          unit: DAYS
+      tasks:
+        - task_key: Clean_data
+          python_wheel_task:
+            package_name: wind_turbines_project
+            entry_point: run_pipeline
+          job_cluster_key: Job_cluster
+          libraries:
+            - whl: /Workspace/Users/foshindv@gmail.com/wind-turbines-project/dist/wind_turbines_project-0.1.2-py3-none-any.whl
+      job_clusters:
+        - job_cluster_key: Job_cluster
+          new_cluster:
+            spark_version: 15.4.x-scala2.12
+            spark_conf:
+              spark.master: local[*, 4]
+              spark.databricks.cluster.profile: singleNode
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: eu-west-2a
+              spot_bid_price_percent: 100
+            node_type_id: r5d.large
+            driver_node_type_id: r5d.large
+            custom_tags:
+              ResourceClass: SingleNode
+            spark_env_vars:
+              PYSPARK_PYTHON: /databricks/python3/bin/python3
+            enable_elastic_disk: true
+            data_security_mode: SINGLE_USER
+            runtime_engine: PHOTON
+            num_workers: 0
+      queue:
+        enabled: true
+      parameters:
+        - name: start_date
+          default: 2022-03-01
+        - name: end_date
+          default: 2022-04-01

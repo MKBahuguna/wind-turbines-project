@@ -1,21 +1,22 @@
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, mean, stddev, to_date, min, max
+from pyspark.sql.functions import col, avg, to_date, min, max
+from src.pipeline.write_data import merge_delta_table
 from .config import statistics_table_name
 
 
-def calculate_daily_statistics(df_clean: DataFrame) -> DataFrame:
+def output_statistics(spark, df_clean: DataFrame) -> DataFrame:
     """
-        1. Calculate the daily mean, min and max for power_output column
+        Calculates the daily min, max, avg for power_output columns and writes to delta table.
     """
     df_daily_statistics = (df_clean
                             .withColumn("date", to_date(col("timestamp")))
                             .groupBy(col("date"), col("turbine_id"))
                             .agg(
-                                mean("power_output").alias("power_output_mean"),
                                 min("power_output").alias("power_output_min"),
                                 max("power_output").alias("power_output_max"),
-                                stddev("power_output").alias("power_output_stddev"),
+                                avg("power_output").alias("power_output_avg"),
                             )
                         )
 
-    df_daily_statistics.write.format("delta").mode("overwrite").saveAsTable(statistics_table_name)
+    keys = ["turbine_id", "date"]
+    merge_delta_table(spark, df_daily_statistics, statistics_table_name, keys)
