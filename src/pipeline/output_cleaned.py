@@ -1,5 +1,5 @@
-from src.pipeline.process_data import replace_outliers_with_means
-from src.pipeline.write_data import merge_delta_table
+from .process_data import replace_outliers_with_means
+from .write_data import merge_delta_table
 from .config import cleaned_table_name
 from pyspark.sql import DataFrame
 

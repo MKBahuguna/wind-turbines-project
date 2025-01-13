@@ -1,6 +1,6 @@
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, avg, to_date, min, max
-from src.pipeline.write_data import merge_delta_table
+from .write_data import merge_delta_table
 from .config import statistics_table_name
 
 
