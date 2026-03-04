@@ -1,5 +1,10 @@
 # Wind Turbines Data Processing Pipeline
-
+<!-- Table of Contents -->
+- [Overview](#overview)
+- [Problem Statement](#problem-statement)
+- [Design](#design)
+  - [Pipeline Stages](#pipeline-stages)
+  - [Assumptions](#assumptions)
 ## Overview
 
 This project implements a scalable and testable data processing pipeline for a renewable energy company managing a wind turbine farm. The pipeline processes raw turbine data, cleans and analyzes it, and stores the results for further analysis. It is built using **Python** and **PySpark**, packaged as a Python wheel, and executed on **Databricks** as part of a scheduled workflow.

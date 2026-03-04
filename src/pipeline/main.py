@@ -11,8 +11,8 @@ from .output_statistics import output_statistics
 def main():
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Run the pipeline")
-    parser.add_argument("--start_date", required=True, help="Start date in YYYY-MM-DD format")
-    parser.add_argument("--end_date", required=True, help="End date in YYYY-MM-DD format")
+    parser.add_argument("--start_date", required=False, help="Start date in YYYY-MM-DD format")
+    parser.add_argument("--end_date", required=False, help="End date in YYYY-MM-DD format")
     args = parser.parse_args()
 
     # Convert arguments to datetime objects
