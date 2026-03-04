@@ -1,0 +1,27 @@
+# bronze_config.yaml
+# Bronze Layer Configuration - Raw data ingestion from Spoke team sources
+
+source:
+  path: "/Workspace/Shared/data/turbines/*.csv"
+  format: "csv"
+  options:
+    header: true
+    inferSchema: true
+    multiLine: true
+    escape: '"'
+
+transform:
+  remove_duplicates: false
+  add_metadata_columns:
+    - load_timestamp
+    - source_file
+  column_case: "lowercase"
+
+destination:
+  database: "dmfos_trial"
+  table: "bronze_turbines"
+  format: "delta"
+  write_mode: "overwrite"
+  partitions:
+    - "year"
+    - "month"

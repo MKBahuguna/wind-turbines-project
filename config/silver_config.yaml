@@ -1,0 +1,57 @@
+# silver_config.yaml
+# Silver Layer Configuration - Data validation, cleansing, standardization
+
+source:
+  database: "dmfos_trial"
+  table: "bronze_turbines"
+
+transform:
+  deduplication:
+    enabled: true
+  
+  standardization:
+    enabled: true
+    trim_strings: true
+    lowercase: true
+  
+  quality_checks:
+    enabled: true
+    rules:
+      turbine_id:
+        nulls_allowed: false
+        data_type: "string"
+      power_output:
+        max_nulls_percent: 5
+        data_type: "double"
+        min_value: 0
+        max_value: 15000
+      wind_speed:
+        max_nulls_percent: 5
+        data_type: "double"
+        min_value: 0
+        max_value: 100
+      temperature:
+        max_nulls_percent: 10
+        data_type: "double"
+        min_value: -50
+        max_value: 60
+  
+  business_rules:
+    enabled: true
+    rules:
+      - "power_output > 0 when wind_speed > 3"
+      - "temperature between -50 and 60"
+  
+  custom_columns:
+    power_efficiency: "power_output / wind_speed"
+    month_extracted: "month(load_timestamp)"
+    year_extracted: "year(load_timestamp)"
+
+destination:
+  database: "dmfos_trial"
+  table: "silver_turbines"
+  format: "delta"
+  write_mode: "overwrite"
+  partitions:
+    - "year"
+    - "month"

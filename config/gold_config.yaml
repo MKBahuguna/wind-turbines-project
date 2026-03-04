@@ -1,0 +1,37 @@
+# gold_config.yaml
+# Gold Layer Configuration - Business-ready aggregations and reporting
+
+source:
+  database: "dmfos_trial"
+  table: "silver_turbines"
+
+transform:
+  aggregation_grain: "daily"  # daily, hourly, weekly, monthly
+  
+  dimensions:
+    - "turbine_id"
+    - "agg_date"
+  
+  metrics:
+    total_power_output: "sum(power_output)"
+    avg_power_output: "avg(power_output)"
+    max_power_output: "max(power_output)"
+    min_power_output: "min(power_output)"
+    avg_wind_speed: "avg(wind_speed)"
+    avg_temperature: "avg(temperature)"
+    record_count: "count(*)"
+  
+  custom_dimensions:
+    performance_band: "power_output / wind_speed"
+    turbine_status: "case when power_output > 0 then 'active' else 'inactive' end"
+
+destination:
+  database: "dmfos_trial"
+  table: "gold_turbines_metrics"
+  format: "delta"
+  write_mode: "overwrite"
+  partitions:
+    - "year"
+    - "month"
+  create_view: true
+  view_name: "gold_turbines_metrics_view"

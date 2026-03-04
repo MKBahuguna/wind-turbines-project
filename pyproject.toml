@@ -17,7 +17,10 @@ dependencies = [
 ]
 
 [project.scripts]
-run_pipeline = "pipeline.main:main"
+run_bronze = "medallion_framework.cli:run_bronze"
+run_silver = "medallion_framework.cli:run_silver"
+run_gold = "medallion_framework.cli:run_gold"
+run_pipeline = "medallion_framework.cli:run_full_pipeline"
 
 [tool.setuptools.packages.find]
 where = ["src"]
