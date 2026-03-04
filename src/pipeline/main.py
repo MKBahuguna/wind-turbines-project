@@ -24,21 +24,23 @@ def main():
              .builder
              .appName("Wind Turbines Pipeline")
              .getOrCreate())
+    
+    print("Hello Wheel Pipeline: ", start_date, end_date)
 
-    # Load raw data in a dataframe
-    df_raw = load_data(spark, raw_data_path, start_date, end_date)
+    # # Load raw data in a dataframe
+    # df_raw = load_data(spark, raw_data_path, start_date, end_date)
 
-    # Process data
-    df_processed = process_data(spark, df_raw, start_date, end_date)
+    # # Process data
+    # df_processed = process_data(spark, df_raw, start_date, end_date)
 
-    # Write cleaned data
-    df_cleaned = output_cleaned(spark, df_processed)
+    # # Write cleaned data
+    # df_cleaned = output_cleaned(spark, df_processed)
 
-    # Write anomalies
-    output_anomalies(spark, df_processed)
+    # # Write anomalies
+    # output_anomalies(spark, df_processed)
 
-    # Write statistics
-    output_statistics(spark, df_cleaned)
+    # # Write statistics
+    # output_statistics(spark, df_cleaned)
 
 
 if __name__ == "__main__":
