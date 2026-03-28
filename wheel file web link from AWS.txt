@@ -1,1 +1,6 @@
-https://ml-team-public-read.s3.us-west-2.amazonaws.com/wheels/agents-monitoring/prod/databricks_agents_monitoring-0.3.0-py3-none-any.whl
+Link 1 - Direct Wheel File Downloads: https://ml-team-public-read.s3.us-west-2.amazonaws.com/wheels/agents-monitoring/prod/databricks_agents_monitoring-0.3.0-py3-none-any.whl
+
+
+Link 2 - Git Repo with Wheel: https://github.com/andre-salvati/databricks-template/tree/main
+
+
