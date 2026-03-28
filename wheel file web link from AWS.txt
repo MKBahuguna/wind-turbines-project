@@ -4,4 +4,4 @@ Link 1 - Direct Wheel File Downloads: https://ml-team-public-read.s3.us-west-2.a
 Link 2 - Git Repo with Wheel: https://github.com/andre-salvati/databricks-template/tree/main
 
 
-Link 3 - Build wheel within Bundle: https://docs.databricks.com/aws/en/dev-tools/bundles/python-wheel?utm_source=chatgpt.com
+Link 3 - Build wheel within Bundle: https://docs.databricks.com/aws/en/dev-tools/bundles/python-wheel
