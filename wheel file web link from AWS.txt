@@ -1,0 +1,1 @@
+https://ml-team-public-read.s3.us-west-2.amazonaws.com/wheels/agents-monitoring/prod/databricks_agents_monitoring-0.3.0-py3-none-any.whl
